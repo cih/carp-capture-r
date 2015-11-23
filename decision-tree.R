@@ -23,14 +23,26 @@ captures = read.csv('train.csv')
 # Set a random seed
 set.seed(1)
 
-# Build a decision tree model
-tree <- rpart(
-  Label ~ AirPressure + Temperature + WindDirection,
-  data = captures, method = "class"
-)
+# If a model exists load it, else fit and save it
+if(file.exists('dtree.rds')) {
+    print('>> Reading saved model...')
+    tree <- readRDS('dtree.rds')
+} else {
+  print('>> Fitting new model')
+  tree <- rpart(
+    Label ~ AirPressure + Temperature + WindDirection,
+    data = captures, method = "class"
+  )
+
+  saveRDS(tree, file = 'dtree.rds')
+}
 
 # A dataframe containing unseen observations
-unseen <- data.frame(Temperature = c(temp), AirPressure = c(ap), WindDirection = c(wd))
+unseen <- data.frame(
+  Temperature = c(temp),
+  AirPressure = c(ap),
+  WindDirection = c(wd)
+)
 
 # Predict the label of the unseen observation
 pred = predict(tree, unseen, type="class")
