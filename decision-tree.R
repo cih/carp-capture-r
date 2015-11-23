@@ -16,31 +16,18 @@ wd <- args[6]
 # Require the libraries
 library(rpart)
 library(gdata)
-library("RPostgreSQL")
-
-# Build the data frame, this would come from db/csv
-#captures <- data.frame(
-#  temp = c(21, 22, 21, 22, 12, 0),
-#  ap = c(1000, 1001, 1010, 1010, 1009, 1009),
-#  location = c("NNN", "SNY", "SNN", "SNN", "SNN", "SNN")
-#)
 
 # Read data from CSV
 captures = read.csv('train.csv')
-
-# Read data from postgres db
-drv <- dbDriver("PostgreSQL")
-con <- dbConnect(drv, dbname = "carp-capture-dev",
-                 host = "localhost", port = 5432,
-                 user = "chris")
-
-print(captures)
 
 # Set a random seed
 set.seed(1)
 
 # Build a decision tree model
-tree <- rpart(Label ~ AirPressure + Temperature + WindDirection, data = captures, method = "class")
+tree <- rpart(
+  Label ~ AirPressure + Temperature + WindDirection,
+  data = captures, method = "class"
+)
 
 # A dataframe containing unseen observations
 unseen <- data.frame(Temperature = c(temp), AirPressure = c(ap), WindDirection = c(wd))
