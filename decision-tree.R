@@ -16,6 +16,7 @@ wd <- args[6]
 # Require the libraries
 library(rpart)
 library(gdata)
+library("RPostgreSQL")
 
 # Build the data frame, this would come from db/csv
 #captures <- data.frame(
@@ -26,6 +27,12 @@ library(gdata)
 
 # Read data from CSV
 captures = read.csv('train.csv')
+
+# Read data from postgres db
+drv <- dbDriver("PostgreSQL")
+con <- dbConnect(drv, dbname = "carp-capture-dev",
+                 host = "localhost", port = 5432,
+                 user = "chris")
 
 print(captures)
 
